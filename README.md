@@ -8,11 +8,11 @@ To achieve the sketch's exact vision, I bypassed standard CSS grid layouts in fa
 
 ## 🛠️ Tech Choices & Reasoning
 
-* **Next.js (App Router):** Chosen for its robust architecture and built-in API routes. The Next.js `<Image>` component is heavily utilized to optimize the high-resolution furniture assets, preventing layout shifts and ensuring fast load times.
-* **Tailwind CSS:** Enabled rapid, utility-first styling. The spatial layout required precise absolute positioning and responsive floating panels, which Tailwind handles exceptionally well without bloated CSS files.
-* **Framer Motion:** Used to power the physics-based drag interactions. For a 2D spatial canvas, Framer Motion provides a much smoother, physics-driven experience out of the box compared to standard list-based drag-and-drop libraries (like `dnd-kit` or `react-beautiful-dnd`).
-* **TypeScript:** Essential for maintaining strict contracts across the application. By strongly typing the `WorkspaceState` and `Product` interfaces, we eliminated a whole class of runtime errors when passing complex state between the canvas, the side panels, and the checkout modal.
-* **Lucide React:** Provided clean, scalable vector icons as visual fallbacks for products without images, keeping the UI looking polished during development.
+- **Next.js (App Router):** Chosen for its robust architecture and built-in API routes. The Next.js `<Image>` component is heavily utilized to optimize the high-resolution furniture assets, preventing layout shifts and ensuring fast load times.
+- **Tailwind CSS:** Enabled rapid, utility-first styling. The spatial layout required precise absolute positioning and responsive floating panels, which Tailwind handles exceptionally well without bloated CSS files.
+- **Framer Motion:** Used to power the physics-based drag interactions. For a 2D spatial canvas, Framer Motion provides a much smoother, physics-driven experience out of the box compared to standard list-based drag-and-drop libraries (like `dnd-kit` or `react-beautiful-dnd`).
+- **TypeScript:** Essential for maintaining strict contracts across the application. By strongly typing the `WorkspaceState` and `Product` interfaces, we eliminated a whole class of runtime errors when passing complex state between the canvas, the side panels, and the checkout modal.
+- **Lucide React:** Provided clean, scalable vector icons as visual fallbacks for products without images, keeping the UI looking polished during development.
 
 ## 🚀 Future Improvements (With More Time)
 
