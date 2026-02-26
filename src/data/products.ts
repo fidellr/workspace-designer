@@ -44,7 +44,7 @@ export const products: Product[] = [
     name: "Monitor",
     category: "accessories",
     price: 40,
-    iconName: "Horizontal Monitor",
+    iconName: "Monitor",
     imageUrl:
       "https://cdn.prod.website-files.com/62ec28c28759bdba5015b899/6863ea6c097ce9fb569b8c0c_24_Full_HD_Office_Monitor_A24i_1_7f987306af.jpeg",
   },
@@ -53,7 +53,7 @@ export const products: Product[] = [
     name: "Monitor",
     category: "accessories",
     price: 40,
-    iconName: "Vertical Monitor",
+    iconName: "Monitor",
     imageUrl:
       "https://media.istockphoto.com/id/153986203/photo/computer-monitor-with-clipping-path.jpg?s=612x612&w=0&k=20&c=zUzocoiP31nfnjUKTmra_3h-avdVdzJuZNh8-kC5UTI=",
   },
