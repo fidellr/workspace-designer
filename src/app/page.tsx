@@ -1,13 +1,10 @@
 import WorkspaceBuilder from "@/components/WorkspaceBuilder";
-import { products } from "@/data/products";
+import { getProductsService } from "@/services/productService";
 
-async function getProducts() {
-  return products;
-}
+export const revalidate = 3600;
 
 export default async function Home() {
-  const initialProducts = await getProducts();
-
+  const initialProducts = await getProductsService();
   return (
     <main className="min-h-screen bg-[#f8f9fa] text-slate-800 font-sans overflow-x-hidden pb-20">
       <header className="text-center pt-8 pb-4">
