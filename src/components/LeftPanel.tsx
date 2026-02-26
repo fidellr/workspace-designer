@@ -58,7 +58,7 @@ export default function LeftPanel({ products }: { products: Product[] }) {
             onClick={() => setLeftTab(tab)}
             className={`flex-1 py-3 text-sm font-medium capitalize transition-colors ${leftTab === tab ? "bg-slate-50 border-b-2 border-slate-800 text-slate-900" : "text-slate-500 hover:bg-slate-50"}`}
           >
-            {tab}s
+            {tab}
           </button>
         ))}
       </nav>
