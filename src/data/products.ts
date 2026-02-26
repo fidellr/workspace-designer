@@ -48,7 +48,7 @@ export const products: Product[] = [
     imageUrl:
       "https://cdn.prod.website-files.com/62ec28c28759bdba5015b899/6863ea6c097ce9fb569b8c0c_24_Full_HD_Office_Monitor_A24i_1_7f987306af.jpeg",
   },
-   {
+  {
     id: "av1",
     name: "Monitor",
     category: "accessories",

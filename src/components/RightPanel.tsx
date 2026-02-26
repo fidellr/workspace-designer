@@ -1,17 +1,13 @@
 import { useState } from "react";
 import Image from "next/image";
-import { Product } from "@/types";
-import { IconMap } from "@/lib/icons";
 import { ChevronRight, ChevronLeft } from "lucide-react";
+import { useWorkspaceStore } from "@/store/useWorkspaceStore";
+import { IconMap } from "@/lib/icons";
+import { Product } from "@/types";
 
-export default function RightPanel({
-  products,
-  onAddAccessory,
-}: {
-  products: Product[];
-  onAddAccessory: (p: Product) => void;
-}) {
+export default function RightPanel({ products }: { products: Product[] }) {
   const [isMinimized, setIsMinimized] = useState(false);
+  const addAccessory = useWorkspaceStore((state) => state.addAccessory);
   const accessories = products.filter((p) => p.category === "accessories");
 
   if (isMinimized) {
@@ -19,7 +15,7 @@ export default function RightPanel({
       <button
         onClick={() => setIsMinimized(false)}
         className="absolute right-4 top-10 bg-white p-3 rounded-xl shadow-md z-40 hover:bg-slate-50 border border-slate-200 group transition-all"
-        title="Expand Quick Add"
+        aria-label="Expand Quick Add"
       >
         <ChevronLeft
           size={24}
@@ -30,12 +26,12 @@ export default function RightPanel({
   }
 
   return (
-    <div className="absolute right-4 top-10 w-64 bg-white/80 backdrop-blur-sm border border-slate-300 rounded-xl shadow-sm z-40 overflow-hidden flex flex-col">
+    <aside className="absolute right-4 top-10 w-64 bg-white/80 backdrop-blur-sm border border-slate-300 rounded-xl shadow-sm z-40 overflow-hidden flex flex-col">
       <div className="flex justify-between items-center bg-slate-100/90 p-2 border-b border-slate-300">
         <button
           onClick={() => setIsMinimized(true)}
           className="p-1 hover:bg-slate-200 rounded text-slate-500 transition-colors"
-          title="Minimize Panel"
+          aria-label="Minimize Panel"
         >
           <ChevronRight size={20} />
         </button>
@@ -66,7 +62,7 @@ export default function RightPanel({
                 )}
               </div>
               <button
-                onClick={() => onAddAccessory(item)}
+                onClick={() => addAccessory(item)}
                 className="w-full bg-white border border-slate-200 text-slate-700 px-3 py-2 text-sm rounded-lg shadow-sm hover:bg-slate-50 font-medium transition-colors"
               >
                 + Add {item.name}!
@@ -75,6 +71,6 @@ export default function RightPanel({
           );
         })}
       </div>
-    </div>
+    </aside>
   );
 }

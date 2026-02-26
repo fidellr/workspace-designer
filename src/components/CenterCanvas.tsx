@@ -1,18 +1,11 @@
-import { useState, useRef } from "react";
+import { useRef } from "react";
 import Image from "next/image";
 import { motion } from "framer-motion";
 import { X } from "lucide-react";
-import { WorkspaceState, Product } from "@/types";
+import { Product } from "@/types";
 import { IconMap } from "@/lib/icons";
-
-interface CenterCanvasProps {
-  workspace: WorkspaceState;
-  total: number;
-  onRemoveMain: (type: "desks" | "chairs") => void;
-  onRemoveAccessory: (index: number) => void;
-  onRemoveExtra: (id: string) => void;
-  onCheckoutClick: () => void;
-}
+import { useWorkspaceStore } from "@/store/useWorkspaceStore";
+import { useResizable } from "@/hooks/useResizable";
 
 const ResizableDraggableItem = ({
   item,
@@ -29,45 +22,8 @@ const ResizableDraggableItem = ({
   onRemove: () => void;
   stageRef: React.RefObject<HTMLDivElement | null>;
 }) => {
-  const [width, setWidth] = useState(initialWidth);
+  const { width, handleResizeStart } = useResizable(initialWidth);
   const Icon = IconMap[item.iconName];
-
-  const handleResizeStart = (e: React.PointerEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const handle = e.currentTarget;
-    const target = handle.parentElement;
-    if (!target) return;
-
-    handle.setPointerCapture(e.pointerId);
-
-    const rect = target.getBoundingClientRect();
-    const startLeft = rect.left;
-    const startTop = rect.top;
-
-    const aspectRatio = rect.height > 0 ? rect.width / rect.height : 1;
-
-    const onMove = (moveEvent: PointerEvent) => {
-      const distanceX = moveEvent.clientX - startLeft;
-
-      const distanceY = moveEvent.clientY - startTop;
-      const widthFromY = distanceY * aspectRatio;
-
-      const newWidth = Math.max(distanceX, widthFromY);
-
-      setWidth(Math.max(60, newWidth));
-    };
-
-    const onUp = (upEvent: PointerEvent) => {
-      handle.releasePointerCapture(upEvent.pointerId);
-      handle.removeEventListener("pointermove", onMove);
-      handle.removeEventListener("pointerup", onUp);
-    };
-
-    handle.addEventListener("pointermove", onMove);
-    handle.addEventListener("pointerup", onUp);
-  };
 
   return (
     <motion.div
@@ -119,73 +75,74 @@ const ResizableDraggableItem = ({
 };
 
 export default function CenterCanvas({
-  workspace,
-  total,
-  onRemoveMain,
-  onRemoveAccessory,
-  onRemoveExtra,
   onCheckoutClick,
-}: CenterCanvasProps) {
+}: {
+  onCheckoutClick: () => void;
+}) {
   const stageRef = useRef<HTMLDivElement>(null);
 
-  if (!workspace) return null;
+  const desks = useWorkspaceStore((state) => state.desks);
+  const chairs = useWorkspaceStore((state) => state.chairs);
+  const accessories = useWorkspaceStore((state) => state.accessories);
+  const extras = useWorkspaceStore((state) => state.extras);
+  const removeMain = useWorkspaceStore((state) => state.removeMain);
+  const removeAccessory = useWorkspaceStore((state) => state.removeAccessory);
+  const removeExtra = useWorkspaceStore((state) => state.removeExtra);
 
+  const total = [desks, chairs, ...accessories, ...extras]
+    .filter(Boolean)
+    .reduce((sum, item) => sum + (item!.price || 0), 0);
   return (
     <>
       <div
         className="absolute inset-0 z-20 overflow-hidden pointer-events-none"
         ref={stageRef}
       >
-        {workspace.desks && (
+        {desks && (
           <ResizableDraggableItem
-            item={workspace.desks}
+            item={desks}
             initialWidth={400}
             initialLeft="calc(50% - 200px)"
             initialTop="220px"
-            onRemove={() => onRemoveMain("desks")}
+            onRemove={() => removeMain("desks")}
             stageRef={stageRef}
           />
         )}
 
-        {workspace.chairs && (
+        {chairs && (
           <ResizableDraggableItem
-            item={workspace.chairs}
+            item={chairs}
             initialWidth={150}
             initialLeft="calc(50% - 75px)"
             initialTop="350px"
-            onRemove={() => onRemoveMain("chairs")}
+            onRemove={() => removeMain("chairs")}
             stageRef={stageRef}
           />
         )}
 
-        {workspace.accessories.map((acc, i) => {
-          const spawnOffset = i * 20 - 40;
-          return (
-            <ResizableDraggableItem
-              key={`acc-${i}`}
-              item={acc}
-              initialWidth={100}
-              initialLeft={`calc(50% - 50px + ${spawnOffset}px)`}
-              initialTop="150px"
-              onRemove={() => onRemoveAccessory(i)}
-              stageRef={stageRef}
-            />
-          );
-        })}
+        {accessories.map((acc, i) => (
+          <ResizableDraggableItem
+            key={`acc-${i}`}
+            item={acc}
+            initialWidth={100}
+            initialLeft={`calc(50% - 50px + ${i * 20 - 40}px)`}
+            initialTop="150px"
+            onRemove={() => removeAccessory(i)}
+            stageRef={stageRef}
+          />
+        ))}
 
-        {workspace.extras.map((ext, i) => {
-          return (
-            <ResizableDraggableItem
-              key={`ext-${ext.id}`}
-              item={ext}
-              initialWidth={120}
-              initialLeft={`calc(${i % 2 === 0 ? "30%" : "70%"} - 60px)`}
-              initialTop="400px"
-              onRemove={() => onRemoveExtra(ext.id)}
-              stageRef={stageRef}
-            />
-          );
-        })}
+        {extras.map((ext, i) => (
+          <ResizableDraggableItem
+            key={`ext-${ext.id}`}
+            item={ext}
+            initialWidth={120}
+            initialLeft={`calc(${i % 2 === 0 ? "30%" : "70%"} - 60px)`}
+            initialTop="400px"
+            onRemove={() => removeExtra(ext.id)}
+            stageRef={stageRef}
+          />
+        ))}
       </div>
 
       <div className="absolute -bottom-8 left-1/2 -translate-x-1/2 z-40 flex flex-col items-center pointer-events-auto">

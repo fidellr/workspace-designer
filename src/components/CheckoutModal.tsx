@@ -1,20 +1,27 @@
-import { Product } from "@/types";
+import { useMemo } from "react";
 import { X } from "lucide-react";
 import { IconMap } from "@/lib/icons";
+import { useWorkspaceStore } from "@/store/useWorkspaceStore";
+import { Product } from "@/types";
 
-interface CheckoutModalProps {
-  selectedItems: Product[];
-  total: number;
-  isSetupValid: boolean;
-  onClose: () => void;
-}
+export default function CheckoutModal({ onClose }: { onClose: () => void }) {
+  const desk = useWorkspaceStore((state) => state.desks);
+  const chair = useWorkspaceStore((state) => state.chairs);
+  const accessories = useWorkspaceStore((state) => state.accessories);
+  const extras = useWorkspaceStore((state) => state.extras);
 
-export default function CheckoutModal({
-  selectedItems,
-  total,
-  isSetupValid,
-  onClose,
-}: CheckoutModalProps) {
+  const selectedItems = useMemo(() => {
+    return [desk, chair, ...accessories, ...extras].filter(
+      Boolean
+    ) as Product[];
+  }, [desk, chair, accessories, extras]);
+
+  const total = useMemo(() => {
+    return selectedItems.reduce((sum, item) => sum + (item.price || 0), 0);
+  }, [selectedItems]);
+
+  const isSetupValid = !!desk && !!chair;
+
   return (
     <div className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-3xl w-full max-w-md p-8 shadow-2xl relative">

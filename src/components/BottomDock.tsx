@@ -1,16 +1,12 @@
 import Image from "next/image";
-import { Product, WorkspaceState } from "@/types";
+import { Product } from "@/types";
 import { IconMap } from "@/lib/icons";
+import { useWorkspaceStore } from "@/store/useWorkspaceStore";
 
-export default function BottomDock({
-  products,
-  workspace,
-  onAddExtra,
-}: {
-  products: Product[];
-  workspace: WorkspaceState;
-  onAddExtra: (p: Product) => void;
-}) {
+export default function BottomDock({ products }: { products: Product[] }) {
+  const extrasState = useWorkspaceStore((state) => state.extras);
+  const addExtra = useWorkspaceStore((state) => state.addExtra);
+
   const columns = [
     { title: "Coffee Station", id: "e1" },
     { title: "Outdoor Gear", id: "e2", id2: "e3" },
@@ -33,13 +29,14 @@ export default function BottomDock({
               {[col.id, col.id2].filter(Boolean).map((itemId) => {
                 const item = products.find((p) => p.id === itemId);
                 if (!item) return null;
+
                 const Icon = IconMap[item.iconName];
-                const isAdded = workspace.extras.some((e) => e.id === item.id);
+                const isAdded = extrasState.some((e) => e.id === item.id);
 
                 return (
                   <div
                     key={item.id}
-                    className={`border border-dashed p-4 rounded-xl flex flex-col items-center bg-white transition-all w-full max-w-[120px] ${isAdded ? "border-green-500 bg-green-50 ring-1 ring-green-500 opacity-50" : "border-slate-300 hover:border-slate-400"}`}
+                    className={`border border-dashed p-4 rounded-xl flex flex-col items-center bg-white transition-all w-full max-w-30 ${isAdded ? "border-green-500 bg-green-50 ring-1 ring-green-500 opacity-50" : "border-slate-300 hover:border-slate-400"}`}
                   >
                     {item.imageUrl ? (
                       <Image
@@ -57,7 +54,7 @@ export default function BottomDock({
                       />
                     )}
                     <button
-                      onClick={() => onAddExtra(item)}
+                      onClick={() => addExtra(item)}
                       disabled={isAdded}
                       className={`text-xs font-semibold w-full py-1.5 rounded ${isAdded ? "text-green-700 bg-green-100 cursor-not-allowed" : "text-slate-600 bg-slate-100 hover:bg-slate-200"}`}
                     >
